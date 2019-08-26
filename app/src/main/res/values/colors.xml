@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pink_400">#EC407A</color>
+    <color name="dark_purple_400">#7E57C2</color>
+    <color name="light_blue_400">#42A5F5</color>
+    <color name="almost_white">#EEEEEE</color>
+
+
+    <color name="deep_aqua">#003b46</color>
+    <color name="ocean">#07575b</color>
+    <color name="wave">#66a5ad</color>
+    <color name="rain">#2c7873</color>
+    <color name="greenery">#6fb98f</color>
+    <color name="new_grass">#86ac41</color>
+    <color name="reflection">#34675c</color>
+    <color name="strawberry">#cb0000</color>
+    <color name="hot_pink">#f52f49</color>
+    <color name="orange_400">#ef5350</color>
+    <color name="bubblegum">#fa6775</color>
+    <color name="orange">#eb8a44</color>
+    <color name="light_orange_400">#FFCA28</color>
+    <color name="lime_400">#D4E157</color>
+
+</resources>
