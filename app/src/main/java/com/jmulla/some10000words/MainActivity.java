@@ -3,7 +3,9 @@ package com.jmulla.some10000words;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +29,7 @@ import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.Duration;
+import com.yuyakaido.android.cardstackview.RewindAnimationSetting;
 import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
 import com.yuyakaido.android.cardstackview.SwipeableMethod;
@@ -36,6 +39,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity implements CardStackListener {
 
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   private List<Spot> deSpots = new ArrayList<>();
   private List<Spot> esSpots = new ArrayList<>();
   private Language currentLang = Language.ES;
+  private Stack<Direction> directions = new Stack<>();
 
   static boolean mIsBackVisible = false;
 
@@ -182,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   public void onCardSwiped(Direction direction) {
     Log.d("CardStackView", "onCardSwiped: p = " + manager.getTopPosition()+ ", d = " + direction);
     mIsBackVisible = false;
+    directions.push(direction);
 //    if (manager.getTopPosition() == adapter.getItemCount() - 5){
 //      paginate();
 //    }
@@ -270,14 +276,16 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     rewind.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-//        SwipeAnimationSetting setting = new SwipeAnimationSetting.Builder()
-//            .setDirection(Direction.Bottom)
-//            .setDuration(Duration.Normal.duration)
-//            .setInterpolator(new DecelerateInterpolator())
-//            .build();
-        //manager.setSwipeAnimationSetting(setting);
-        reload();
-        //cardStackView.swipe();
+        if (directions.empty()){
+          return;
+        }
+        RewindAnimationSetting setting = new RewindAnimationSetting.Builder()
+            .setDirection(directions.pop())
+            .setDuration(Duration.Fast.duration)
+            .setInterpolator(new DecelerateInterpolator())
+            .build();
+        manager.setRewindAnimationSetting(setting);
+        cardStackView.rewind();
       }
     });
 

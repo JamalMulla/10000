@@ -21,6 +21,8 @@ import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jmulla.some10000words.JSONModels.Pronunciation;
+import com.varunest.sparkbutton.SparkButton;
+import com.varunest.sparkbutton.SparkEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,6 +176,10 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     private ImageView backBg;
     private View divider_back;
     private View divider_front;
+    //private ImageView star_front;
+    private boolean starred = false;
+    private SparkButton star;
+
 
     ViewHolder(final View view) {
       super(view);
@@ -187,7 +193,8 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
       this.backBg = view.findViewById(R.id.card_back_bg);
       this.divider_back = view.findViewById(R.id.divider_back);
       this.divider_front = view.findViewById(R.id.divider_front);
-
+      this.star = view.findViewById(R.id.star);
+      //this.star_front = view.findViewById(R.id.star_front);
 
 
       changeCameraDistance(context, card_front, card_back);
@@ -201,6 +208,24 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         @Override
         public void onClick(View v) {
           flipCard(card_front, card_back);
+        }
+      });
+
+
+      this.star.setEventListener(new SparkEventListener(){
+        @Override
+        public void onEvent(ImageView button, boolean buttonState) {
+          star.playAnimation();
+        }
+
+        @Override
+        public void onEventAnimationEnd(ImageView button, boolean buttonState) {
+
+        }
+
+        @Override
+        public void onEventAnimationStart(ImageView button, boolean buttonState) {
+
         }
       });
     }
