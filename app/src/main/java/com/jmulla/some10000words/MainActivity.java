@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
   @Override
   public void onCardRewound() {
-    Log.d("CardStackView", "onCardRewound: " + manager.getTopPosition());
+    directions.pop();
   }
 
   @Override
@@ -197,14 +197,14 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
   @Override
   public void onCardAppeared(View view, int position) {
-    TextView textView = view.findViewById(R.id.foreign_word);
-    Log.d("CardStackView", "onCardAppeared: " + "(" + position + ") " + textView.getText());
+//    TextView textView = view.findViewById(R.id.foreign_word);
+//    Log.d("CardStackView", "onCardAppeared: " + "(" + position + ") " + textView.getText());
   }
 
   @Override
   public void onCardDisappeared(View view, int position) {
-    TextView textView = view.findViewById(R.id.foreign_word);
-    Log.d("CardStackView", "onCardDisappeared: " + "(" + position + ") " + textView.getText());
+//    TextView textView = view.findViewById(R.id.foreign_word);
+//    Log.d("CardStackView", "onCardDisappeared: " + "(" + position + ") " + textView.getText());
   }
 
   void setupNavigation() {
@@ -267,12 +267,13 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     rewind.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (directions.empty()) {
+        if ( directions.empty()) {
           return;
         }
+
         RewindAnimationSetting setting = new RewindAnimationSetting.Builder()
-            .setDirection(directions.pop())
-            .setDuration(Duration.Fast.duration)
+            .setDirection(directions.peek())
+            .setDuration(Duration.Normal.duration)
             .setInterpolator(new DecelerateInterpolator())
             .build();
         manager.setRewindAnimationSetting(setting);
