@@ -27,7 +27,7 @@ import com.varunest.sparkbutton.SparkEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder>{
+public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
 
   private List<Spot> spots;
 
@@ -37,7 +37,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
   private List<Integer> colors;
 
 
-  public CardStackAdapter(List<Spot> spots){
+  public CardStackAdapter(List<Spot> spots) {
     this.spots = spots;
   }
 
@@ -54,8 +54,8 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
   }
 
-  private int getColor(int adapterPosition){
-    if (adapterPosition < 0){
+  private int getColor(int adapterPosition) {
+    if (adapterPosition < 0) {
       adapterPosition = 0;
     }
     int col = adapterPosition % colors.size();
@@ -63,8 +63,8 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
   }
 
 
-
   private Context context;
+
   @NonNull
   @Override
   public CardStackAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -80,21 +80,21 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     final Spot spot = this.spots.get(position);
     holder.foreign_word.setText(spot.getForeignWord());
     holder.en_word1.setText(spot.getEnglishWord1());
-    if (spot.getEnglishWord2().equals("")){
+    if (spot.getEnglishWord2().equals("")) {
       holder.divider_back.setVisibility(View.GONE);
-    }else {
+    } else {
       holder.en_word2.setText(spot.getEnglishWord2());
     }
 
-    if (spot.getPronunciationList().isEmpty()){
+    if (spot.getPronunciationList().isEmpty()) {
       holder.divider_front.setVisibility(View.GONE);
-    }else {
+    } else {
       SpannableStringBuilder pronunciationString = new SpannableStringBuilder();
       //int whiteish = ContextCompat.getColor(context, R.color.almost_white);
-      for (Pronunciation p : spot.getPronunciationList()){
+      for (Pronunciation p : spot.getPronunciationList()) {
         int start = pronunciationString.length();
         pronunciationString.append(p.getSyllable());
-        if (p.isEmphasis()){
+        if (p.isEmphasis()) {
 //        pronunciationString.setSpan(new ForegroundColorSpan(whiteish), start, pronunciationString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
           pronunciationString.setSpan(new StyleSpan(Typeface.BOLD), start, pronunciationString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -102,7 +102,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
       holder.pronunciation.setText(pronunciationString);
     }
-
 
 
     int color = getColor(holder.getAdapterPosition());
@@ -115,32 +114,28 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     return spots.size();
   }
 
-  void setSpots(List<Spot> spots){
+  void setSpots(List<Spot> spots) {
     this.spots = spots;
   }
 
-  List<Spot> getSpots(){
+  List<Spot> getSpots() {
     return spots;
   }
 
-  private void flipCard(RelativeLayout mCardFrontLayout, RelativeLayout mCardBackLayout) {
-    if (mSetLeftIn.isRunning() || mSetRightOut.isRunning()){
-      return;
-    }
-    if (!MainActivity.mIsBackVisible) {
+  private void flipCard(RelativeLayout mCardFrontLayout, RelativeLayout mCardBackLayout, boolean isBackVisible) {
+    if (!isBackVisible) {
       mSetRightOut.setTarget(mCardFrontLayout);
       mSetLeftIn.setTarget(mCardBackLayout);
       mSetRightOut.start();
       mSetLeftIn.start();
-      MainActivity.mIsBackVisible = true;
     } else {
       mSetRightOut.setTarget(mCardBackLayout);
       mSetLeftIn.setTarget(mCardFrontLayout);
       mSetRightOut.start();
       mSetLeftIn.start();
-      MainActivity.mIsBackVisible = false;
     }
   }
+
   private void changeCameraDistance(Context context, RelativeLayout mCardFrontLayout, RelativeLayout mCardBackLayout) {
     int distance = 128000;
     float scale = context.getResources().getDisplayMetrics().density * distance;
@@ -164,7 +159,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
   }
 
 
-
   class ViewHolder extends RecyclerView.ViewHolder {
     private TextView foreign_word;
     private TextView en_word1;
@@ -176,8 +170,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     private ImageView backBg;
     private View divider_back;
     private View divider_front;
-    //private ImageView star_front;
-    private boolean starred = false;
+    private boolean isBackVisible = false;
     private SparkButton star;
 
 
@@ -194,25 +187,29 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
       this.divider_back = view.findViewById(R.id.divider_back);
       this.divider_front = view.findViewById(R.id.divider_front);
       this.star = view.findViewById(R.id.star);
-      //this.star_front = view.findViewById(R.id.star_front);
 
 
       changeCameraDistance(context, card_front, card_back);
       this.card_front.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-          flipCard(card_front, card_back);
-        }
-      });
-      this.card_back.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          flipCard(card_front, card_back);
+          if (mSetLeftIn.isRunning() || mSetRightOut.isRunning()) {
+            return;
+          }
+          flipCard(card_front, card_back, isBackVisible);
+          isBackVisible = !isBackVisible;
         }
       });
 
+//      this.card_back.setOnClickListener(new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//          flipCard(card_front, card_back, isBackVisible);
+//        }
+//      });
 
-      this.star.setEventListener(new SparkEventListener(){
+
+      this.star.setEventListener(new SparkEventListener() {
         @Override
         public void onEvent(ImageView button, boolean buttonState) {
           star.playAnimation();

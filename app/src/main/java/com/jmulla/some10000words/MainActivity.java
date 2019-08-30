@@ -52,9 +52,6 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   private Language currentLang = Language.ES;
   private Stack<Direction> directions = new Stack<>();
 
-  static boolean mIsBackVisible = false;
-
-
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,11 +73,10 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   }
 
 
-
   private void setupDESpots() {
     String deWordList = loadJSONAsString("de_wordlist.json");
 
-    if (deWordList == null){
+    if (deWordList == null) {
       return;
     }
     Moshi moshi = new Moshi.Builder().build();
@@ -91,12 +87,12 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     List<DEWordPair> wordPairList;
     try {
       wordPairList = jsonAdapter.fromJson(deWordList);
-      if (wordPairList == null){
+      if (wordPairList == null) {
         Toast.makeText(this, "Couldn't get German words", Toast.LENGTH_SHORT).show();
         return;
       }
       List<Spot> spots = new ArrayList<>();
-      for (DEWordPair pair : wordPairList){
+      for (DEWordPair pair : wordPairList) {
         spots.add(new Spot(pair.getDe(), pair.getEn()));
       }
       this.deSpots = spots;
@@ -110,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   private void setupESSpots() {
     String esWordList = loadJSONAsString("es_wordlist.json");
 
-    if (esWordList == null){
+    if (esWordList == null) {
       return;
     }
 
@@ -122,12 +118,12 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     List<ESWordPair> wordPairList;
     try {
       wordPairList = jsonAdapter.fromJson(esWordList);
-      if (wordPairList == null){
+      if (wordPairList == null) {
         Toast.makeText(this, "Couldn't get Spanish words", Toast.LENGTH_SHORT).show();
         return;
       }
       List<Spot> spots = new ArrayList<>();
-      for (ESWordPair pair : wordPairList){
+      for (ESWordPair pair : wordPairList) {
         String es;
         String en1;
         String en2;
@@ -145,9 +141,9 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   }
 
 
-  private String loadJSONAsString(String filename){
+  private String loadJSONAsString(String filename) {
     String JSONString = AssetUtils.loadJSONFromAsset(this, filename);
-    if (JSONString == null){
+    if (JSONString == null) {
       System.out.println("Error in loading word store");
       return null;
     }
@@ -155,21 +151,18 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   }
 
 
-
   private void shuffle(Language language) {
-    if (language.equals(Language.DE)){
+    if (language.equals(Language.DE)) {
       Collections.shuffle(this.deSpots);
-    } else if (language.equals(Language.ES)){
+    } else if (language.equals(Language.ES)) {
       Collections.shuffle(this.esSpots);
     }
   }
 
 
-
-
   @Override
   public void onBackPressed() {
-    if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+    if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
       drawerLayout.closeDrawers();
     } else {
       super.onBackPressed();
@@ -185,8 +178,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
   @Override
   public void onCardSwiped(Direction direction) {
-    Log.d("CardStackView", "onCardSwiped: p = " + manager.getTopPosition()+ ", d = " + direction);
-    mIsBackVisible = false;
+    Log.d("CardStackView", "onCardSwiped: p = " + manager.getTopPosition() + ", d = " + direction);
     directions.push(direction);
 //    if (manager.getTopPosition() == adapter.getItemCount() - 5){
 //      paginate();
@@ -205,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
   @Override
   public void onCardAppeared(View view, int position) {
-    mIsBackVisible = false;
     TextView textView = view.findViewById(R.id.foreign_word);
     Log.d("CardStackView", "onCardAppeared: " + "(" + position + ") " + textView.getText());
   }
@@ -216,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     Log.d("CardStackView", "onCardDisappeared: " + "(" + position + ") " + textView.getText());
   }
 
-  void setupNavigation(){
+  void setupNavigation() {
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
@@ -253,11 +244,11 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   }
 
 
-  public void setupCardStackView(){
+  public void setupCardStackView() {
     initialize();
   }
 
-  public void setupButton(){
+  public void setupButton() {
     View skip = findViewById(R.id.skip_button);
     skip.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -276,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     rewind.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (directions.empty()){
+        if (directions.empty()) {
           return;
         }
         RewindAnimationSetting setting = new RewindAnimationSetting.Builder()
@@ -304,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     });
   }
 
-  void initialize(){
+  void initialize() {
     manager.setStackFrom(StackFrom.Top);
     manager.setVisibleCount(3);
     manager.setTranslationInterval(12.0f);
@@ -318,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     manager.setOverlayInterpolator(new LinearInterpolator());
     cardStackView.setLayoutManager(manager);
     cardStackView.setAdapter(adapter);
-    if (cardStackView.getItemAnimator() instanceof DefaultItemAnimator){
+    if (cardStackView.getItemAnimator() instanceof DefaultItemAnimator) {
       ((DefaultItemAnimator) cardStackView.getItemAnimator()).setSupportsChangeAnimations(false);
     }
   }
@@ -334,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 //    result.dispatchUpdatesTo(adapter);
 //  }
 
-  void reload(){
+  void reload() {
 //    List<Spot> old = adapter.getSpots();
 //    List<Spot> newItems = createSpots();
 //    SpotDiffCallback callback = new SpotDiffCallback(old, newItems);
@@ -342,7 +333,6 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     shuffle(currentLang);
     adapter.notifyDataSetChanged();
-    mIsBackVisible = false;
     //result.dispatchUpdatesTo(adapter);
   }
 //
@@ -424,14 +414,6 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 //    adapter.setSpots(newItems);
 //    result.dispatchUpdatesTo(adapter);
 //  }
-
-
-
-
-
-
-
-
 
 
 }
