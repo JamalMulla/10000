@@ -1,5 +1,7 @@
 package com.jmulla.some10000words.JSONModels;
 
+import com.jmulla.some10000words.Entities.Pronunciation;
+
 import java.util.List;
 
 public class ESWordPair {

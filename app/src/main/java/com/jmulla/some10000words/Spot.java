@@ -1,6 +1,6 @@
 package com.jmulla.some10000words;
 
-import com.jmulla.some10000words.JSONModels.Pronunciation;
+import com.jmulla.some10000words.Entities.Pronunciation;
 
 import java.util.ArrayList;
 import java.util.List;

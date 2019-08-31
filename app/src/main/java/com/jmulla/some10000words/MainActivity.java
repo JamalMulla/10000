@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     drawerLayout = findViewById(R.id.drawer_layout);
     cardStackView = findViewById(R.id.card_stack_view);
 
-    setupDESpots();
-    setupESSpots();
 
     manager = new CardStackLayoutManager(this, this);
     adapter = new CardStackAdapter(this.esSpots);
@@ -72,83 +70,6 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
   }
 
-
-  private void setupDESpots() {
-    String deWordList = loadJSONAsString("de_wordlist.json");
-
-    if (deWordList == null) {
-      return;
-    }
-    Moshi moshi = new Moshi.Builder().build();
-    Type listWords = Types.newParameterizedType(List.class, DEWordPair.class);
-    JsonAdapter<List<DEWordPair>> jsonAdapter = moshi.adapter(listWords);
-    jsonAdapter = jsonAdapter.lenient();
-
-    List<DEWordPair> wordPairList;
-    try {
-      wordPairList = jsonAdapter.fromJson(deWordList);
-      if (wordPairList == null) {
-        Toast.makeText(this, "Couldn't get German words", Toast.LENGTH_SHORT).show();
-        return;
-      }
-      List<Spot> spots = new ArrayList<>();
-      for (DEWordPair pair : wordPairList) {
-        spots.add(new Spot(pair.getDe(), pair.getEn()));
-      }
-      this.deSpots = spots;
-      shuffle(Language.DE);
-    } catch (IOException e) {
-      e.printStackTrace();
-      Toast.makeText(this, "Couldn't get German words", Toast.LENGTH_SHORT).show();
-    }
-  }
-
-  private void setupESSpots() {
-    String esWordList = loadJSONAsString("es_wordlist.json");
-
-    if (esWordList == null) {
-      return;
-    }
-
-
-    Moshi moshi = new Moshi.Builder().build();
-    Type listWords = Types.newParameterizedType(List.class, ESWordPair.class);
-    JsonAdapter<List<ESWordPair>> jsonAdapter = moshi.adapter(listWords);
-
-    List<ESWordPair> wordPairList;
-    try {
-      wordPairList = jsonAdapter.fromJson(esWordList);
-      if (wordPairList == null) {
-        Toast.makeText(this, "Couldn't get Spanish words", Toast.LENGTH_SHORT).show();
-        return;
-      }
-      List<Spot> spots = new ArrayList<>();
-      for (ESWordPair pair : wordPairList) {
-        String es;
-        String en1;
-        String en2;
-        es = pair.getBase().equals("") ? pair.getOriginal_es() : pair.getBase();
-        en1 = pair.getDef1().equals("") ? pair.getOriginal_en() : pair.getDef1();
-        en2 = pair.getDef2();
-        spots.add(new Spot(es, en1, en2, pair.getPronunciation()));
-      }
-      this.esSpots = spots;
-      shuffle(Language.ES);
-    } catch (Exception e) {
-      e.printStackTrace();
-      Toast.makeText(this, "Couldn't get Spanish words", Toast.LENGTH_SHORT).show();
-    }
-  }
-
-
-  private String loadJSONAsString(String filename) {
-    String JSONString = AssetUtils.loadJSONFromAsset(this, filename);
-    if (JSONString == null) {
-      System.out.println("Error in loading word store");
-      return null;
-    }
-    return JSONString;
-  }
 
 
   private void shuffle(Language language) {
