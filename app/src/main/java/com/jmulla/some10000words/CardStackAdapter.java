@@ -20,7 +20,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jmulla.some10000words.JSONModels.Pronunciation;
+
+import com.jmulla.some10000words.Entities.Pronunciation;
+import com.jmulla.some10000words.Entities.WordPair;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
 
@@ -29,7 +31,7 @@ import java.util.List;
 
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
 
-  private List<Spot> spots;
+  private List<WordPair> spots;
 
   private AnimatorSet mSetRightOut;
   private AnimatorSet mSetLeftIn;
@@ -37,9 +39,11 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
   private List<Integer> colors;
 
 
-  public CardStackAdapter(List<Spot> spots) {
+  public CardStackAdapter(List<WordPair> spots) {
     this.spots = spots;
   }
+
+  public CardStackAdapter(){}
 
   private void setupColors() {
     colors = new ArrayList<>();
@@ -77,24 +81,24 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
   @Override
   public void onBindViewHolder(@NonNull CardStackAdapter.ViewHolder holder, int position) {
-    final Spot spot = this.spots.get(position);
+    final WordPair spot = this.spots.get(position);
     holder.foreign_word.setText(spot.getForeignWord());
-    holder.en_word1.setText(spot.getEnglishWord1());
-    if (spot.getEnglishWord2().equals("")) {
+    holder.en_word1.setText(spot.getDef1());
+    if (spot.getDef2().equals("")) {
       holder.divider_back.setVisibility(View.GONE);
     } else {
-      holder.en_word2.setText(spot.getEnglishWord2());
+      holder.en_word2.setText(spot.getDef2());
     }
 
-    if (spot.getPronunciationList().isEmpty()) {
+    if (spot.getPronunciation().isEmpty()) {
       holder.divider_front.setVisibility(View.GONE);
     } else {
       SpannableStringBuilder pronunciationString = new SpannableStringBuilder();
       //int whiteish = ContextCompat.getColor(context, R.color.almost_white);
-      for (Pronunciation p : spot.getPronunciationList()) {
+      for (Pronunciation p : spot.getPronunciation()) {
         int start = pronunciationString.length();
         pronunciationString.append(p.getSyllable());
-        if (p.isEmphasis()) {
+        if (p.hasEmphasis()) {
 //        pronunciationString.setSpan(new ForegroundColorSpan(whiteish), start, pronunciationString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
           pronunciationString.setSpan(new StyleSpan(Typeface.BOLD), start, pronunciationString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -111,14 +115,18 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
   @Override
   public int getItemCount() {
+    if (spots == null){
+      return 0;
+    }
     return spots.size();
   }
 
-  void setSpots(List<Spot> spots) {
+  void setSpots(List<WordPair> spots) {
     this.spots = spots;
+    notifyDataSetChanged();
   }
 
-  List<Spot> getSpots() {
+  List<WordPair> getSpots() {
     return spots;
   }
 

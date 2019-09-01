@@ -2,11 +2,13 @@ package com.jmulla.some10000words.DAOs;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
 import com.jmulla.some10000words.Entities.WordPair;
+import com.jmulla.some10000words.Language;
 
 import java.util.List;
 
@@ -19,12 +21,16 @@ public interface WordPairDao {
   @Update
   void update(WordPair wordPair);
 
+  @Delete
   void delete(WordPair wordPair);
+
+  @Insert
+  void insertAll(List<WordPair> wordPairs);
 
   @Query("SELECT * FROM WordPairs WHERE id IN (SELECT id FROM WordPairs ORDER BY RANDOM() LIMIT :numberOfPairs)")
   LiveData<List<WordPair>> getRandomWordPairs(int numberOfPairs);
 
-  @Query("SELECT * FROM WordPairs")
-  LiveData<List<WordPair>> getAllPairs();
+  @Query("SELECT * FROM WordPairs where language = :language")
+  LiveData<List<WordPair>> getAllPairs(Language language);
 
 }

@@ -1,4 +1,4 @@
-package com.jmulla.some10000words;
+package com.jmulla.some10000words.Repositories;
 
 import android.app.Application;
 
@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.jmulla.some10000words.DAOs.WordPairDao;
 import com.jmulla.some10000words.Databases.WordPairDatabase;
 import com.jmulla.some10000words.Entities.WordPair;
+import com.jmulla.some10000words.Language;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class WordPairRepository {
     t.start();
   }
 
+
   public void update(final WordPair wordPair){
     Thread t = new Thread(new Runnable() {
       public void run() {
@@ -45,12 +47,21 @@ public class WordPairRepository {
     t.start();
   }
 
+  public void insertAll(final List<WordPair> wordPairs){
+    Thread t = new Thread(new Runnable() {
+      public void run() {
+        wordPairDao.insertAll(wordPairs);
+      }
+    });
+    t.start();
+  }
+
   public LiveData<List<WordPair>> getRandomWordPairs(int numberOfPairs){
     return wordPairDao.getRandomWordPairs(numberOfPairs);
   }
 
-  public LiveData<List<WordPair>> getAllPairs() {
-    return wordPairDao.getAllPairs();
+  public LiveData<List<WordPair>> getAllPairs(Language language) {
+    return wordPairDao.getAllPairs(language);
   }
 
 }

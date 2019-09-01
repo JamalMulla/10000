@@ -1,29 +1,24 @@
 package com.jmulla.some10000words;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DiffUtil;
 
-import com.jmulla.some10000words.JSONModels.DEWordPair;
-import com.jmulla.some10000words.JSONModels.ESWordPair;
-import com.jmulla.some10000words.Utils.AssetUtils;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
+import com.jmulla.some10000words.Entities.WordPair;
+import com.jmulla.some10000words.ViewModels.WordPairViewModel;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
@@ -34,10 +29,6 @@ import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
 import com.yuyakaido.android.cardstackview.SwipeableMethod;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -47,9 +38,8 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   private CardStackView cardStackView;
   private CardStackLayoutManager manager;
   private CardStackAdapter adapter;
-  private List<Spot> deSpots = new ArrayList<>();
-  private List<Spot> esSpots = new ArrayList<>();
   private Language currentLang = Language.ES;
+  private WordPairViewModel viewModel;
   private Stack<Direction> directions = new Stack<>();
 
 
@@ -57,27 +47,52 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    final ProgressDialog nDialog;
+    nDialog = new ProgressDialog(this);
+    nDialog.setMessage("Loading..");
+    nDialog.setTitle("Setting up database for first time");
+    nDialog.setIndeterminate(false);
+    nDialog.setCancelable(true);
+    nDialog.show();
+
     drawerLayout = findViewById(R.id.drawer_layout);
     cardStackView = findViewById(R.id.card_stack_view);
 
 
     manager = new CardStackLayoutManager(this, this);
-    adapter = new CardStackAdapter(this.esSpots);
+    adapter = new CardStackAdapter();
 
     setupNavigation();
     setupCardStackView();
     setupButton();
+
+    viewModel = ViewModelProviders.of(this).get(WordPairViewModel.class);
+
+    final long start = System.currentTimeMillis();
+
+    viewModel.getAllPairs(Language.ES).observe(this, new Observer<List<WordPair>>() {
+      @Override
+      public void onChanged(List<WordPair> wordPairs) {
+        if (wordPairs.size() > 0){
+          adapter.setSpots(wordPairs);
+          nDialog.dismiss();
+          long end = System.currentTimeMillis();
+          Log.i("MainActivity", "Time taken (ms) = " + (end - start));
+        }
+      }
+    });
+
 
   }
 
 
 
   private void shuffle(Language language) {
-    if (language.equals(Language.DE)) {
-      Collections.shuffle(this.deSpots);
-    } else if (language.equals(Language.ES)) {
-      Collections.shuffle(this.esSpots);
-    }
+//    if (language.equals(Language.DE)) {
+//      Collections.shuffle(this.deSpots);
+//    } else if (language.equals(Language.ES)) {
+//      Collections.shuffle(this.esSpots);
+//    }
   }
 
 

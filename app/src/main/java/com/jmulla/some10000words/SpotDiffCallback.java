@@ -2,14 +2,16 @@ package com.jmulla.some10000words;
 
 import androidx.recyclerview.widget.DiffUtil;
 
+import com.jmulla.some10000words.Entities.WordPair;
+
 import java.util.List;
 
 public class SpotDiffCallback extends DiffUtil.Callback {
 
-  private final List<Spot> old;
-  private final List<Spot> newItems;
+  private final List<WordPair> old;
+  private final List<WordPair> newItems;
 
-  public SpotDiffCallback(List<Spot> old, List<Spot> newItems){
+  public SpotDiffCallback(List<WordPair> old, List<WordPair> newItems){
     this.old = old;
     this.newItems = newItems;
   }
@@ -26,11 +28,11 @@ public class SpotDiffCallback extends DiffUtil.Callback {
 
   @Override
   public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-    return old.get(oldItemPosition).getId().equals(newItems.get(newItemPosition).getId());
+    return old.get(oldItemPosition).getId() == newItems.get(newItemPosition).getId();
   }
 
   @Override
   public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-    return old.get(oldItemPosition).equals(newItems.get(newItemPosition));
+    return old.get(oldItemPosition) == newItems.get(newItemPosition);
   }
 }
