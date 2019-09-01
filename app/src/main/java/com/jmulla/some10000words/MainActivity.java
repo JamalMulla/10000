@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     final ProgressDialog nDialog;
     nDialog = new ProgressDialog(this);
     nDialog.setMessage("Loading..");
-    nDialog.setTitle("Setting up database for first time");
+    nDialog.setTitle("Getting Spanish words");
     nDialog.setIndeterminate(false);
     nDialog.setCancelable(true);
     nDialog.show();
@@ -64,13 +65,13 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     setupNavigation();
     setupCardStackView();
-    setupButton();
+    setupButtons();
 
     viewModel = ViewModelProviders.of(this).get(WordPairViewModel.class);
 
     final long start = System.currentTimeMillis();
 
-    viewModel.getAllPairs(Language.ES).observe(this, new Observer<List<WordPair>>() {
+    viewModel.getRandomWordPairs(Language.ES, 50).observe(this, new Observer<List<WordPair>>() {
       @Override
       public void onChanged(List<WordPair> wordPairs) {
         if (wordPairs.size() > 0){
@@ -180,11 +181,13 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   }
 
 
+
+
   public void setupCardStackView() {
     initialize();
   }
 
-  public void setupButton() {
+  public void setupButtons() {
     View skip = findViewById(R.id.skip_button);
     skip.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -214,6 +217,23 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
             .build();
         manager.setRewindAnimationSetting(setting);
         cardStackView.rewind();
+      }
+    });
+
+    View shuffle = findViewById(R.id.shuffle_button);
+    shuffle.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Toast.makeText(MainActivity.this, "Getting new deck", Toast.LENGTH_SHORT).show();
+        viewModel.getRandomWordPairs(Language.ES, 50).observe(MainActivity.this, new Observer<List<WordPair>>() {
+          @Override
+          public void onChanged(List<WordPair> wordPairs) {
+            if (wordPairs.size() > 0){
+              adapter.setSpots(wordPairs);
+              directions.clear();
+            }
+          }
+        });
       }
     });
 

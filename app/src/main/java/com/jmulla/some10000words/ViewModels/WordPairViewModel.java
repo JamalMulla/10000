@@ -37,8 +37,8 @@ public class WordPairViewModel extends AndroidViewModel {
     repository.insertAll(wordPairs);
   }
 
-  public LiveData<List<WordPair>> getRandomWordPairs(int numberOfPairs){
-    return repository.getRandomWordPairs(numberOfPairs);
+  public LiveData<List<WordPair>> getRandomWordPairs(Language language, int numberOfPairs){
+    return repository.getRandomWordPairs(language, numberOfPairs);
   }
 
   public LiveData<List<WordPair>> getAllPairs(Language language) {

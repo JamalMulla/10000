@@ -27,10 +27,10 @@ public interface WordPairDao {
   @Insert
   void insertAll(List<WordPair> wordPairs);
 
-  @Query("SELECT * FROM WordPairs WHERE id IN (SELECT id FROM WordPairs ORDER BY RANDOM() LIMIT :numberOfPairs)")
-  LiveData<List<WordPair>> getRandomWordPairs(int numberOfPairs);
+  @Query("SELECT * FROM WordPairs WHERE id IN (SELECT id FROM WordPairs WHERE language = :language ORDER BY RANDOM() LIMIT :numberOfPairs)")
+  LiveData<List<WordPair>> getRandomWordPairs(Language language, int numberOfPairs);
 
-  @Query("SELECT * FROM WordPairs where language = :language")
+  @Query("SELECT * FROM WordPairs WHERE language = :language")
   LiveData<List<WordPair>> getAllPairs(Language language);
 
 }

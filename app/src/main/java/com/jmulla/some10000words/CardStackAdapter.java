@@ -153,12 +153,12 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
   @Override
   public long getItemId(int position) {
-    return position;
+    return spots.get(position).getId();
   }
 
   @Override
   public int getItemViewType(int position) {
-    return position;
+    return spots.get(position).getId();
   }
 
   private void loadAnimations(Context context) {

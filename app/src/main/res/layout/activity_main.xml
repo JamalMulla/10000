@@ -43,8 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/rewind_button"
-                    android:layout_toStartOf="@+id/rewind_button"
+                    android:layout_toStartOf="@id/rewind_button"
                     android:src="@drawable/skip_red_24dp"
                     app:backgroundTint="@android:color/white"
                     app:fabSize="auto"
@@ -58,8 +57,29 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginRight="32dp"
                     android:layout_marginEnd="32dp"
-                    android:layout_centerInParent="true"
+                    android:layout_toStartOf="@id/divider_middle"
                     android:src="@drawable/rewind_blue_24dp"
+                    app:backgroundTint="@android:color/white"
+                    app:fabSize="mini"
+                    app:rippleColor="#225BC9FA"/>
+
+                <View
+                    android:id="@+id/divider_middle"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_centerInParent="true"
+                    android:background="#fff"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/shuffle_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_toEndOf="@id/divider_middle"
+                    android:src="@drawable/ic_shuffle_black_24dp"
                     app:backgroundTint="@android:color/white"
                     app:fabSize="mini"
                     app:rippleColor="#225BC9FA"/>
@@ -69,8 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/rewind_button"
-                    android:layout_toEndOf="@+id/rewind_button"
+                    android:layout_toEndOf="@+id/shuffle_button"
                     android:src="@drawable/like_green_24dp"
                     app:backgroundTint="@android:color/white"
                     app:fabSize="auto"

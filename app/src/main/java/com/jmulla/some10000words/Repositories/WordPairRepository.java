@@ -56,8 +56,9 @@ public class WordPairRepository {
     t.start();
   }
 
-  public LiveData<List<WordPair>> getRandomWordPairs(int numberOfPairs){
-    return wordPairDao.getRandomWordPairs(numberOfPairs);
+  public LiveData<List<WordPair>> getRandomWordPairs(Language language, int numberOfPairs){
+    LiveData<List<WordPair>> randomWordPairs = wordPairDao.getRandomWordPairs(language, numberOfPairs);
+    return randomWordPairs;
   }
 
   public LiveData<List<WordPair>> getAllPairs(Language language) {
