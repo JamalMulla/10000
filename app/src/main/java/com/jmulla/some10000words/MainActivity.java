@@ -61,13 +61,13 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
 
     manager = new CardStackLayoutManager(this, this);
-    adapter = new CardStackAdapter();
+    viewModel = ViewModelProviders.of(this).get(WordPairViewModel.class);
+    adapter = new CardStackAdapter(viewModel);
 
     setupNavigation();
     setupCardStackView();
     setupButtons();
 
-    viewModel = ViewModelProviders.of(this).get(WordPairViewModel.class);
 
     final long start = System.currentTimeMillis();
 
@@ -84,17 +84,18 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     });
 
 
+    viewModel.getAllStarred().observe(this, new Observer<List<WordPair>>() {
+      @Override
+      public void onChanged(List<WordPair> wordPairs) {
+        for (WordPair wordPair : wordPairs){
+          System.out.println(wordPair.getForeignWord() + ": " + wordPair.getDef1());
+        }
+      }
+    });
+
+
   }
 
-
-
-  private void shuffle(Language language) {
-//    if (language.equals(Language.DE)) {
-//      Collections.shuffle(this.deSpots);
-//    } else if (language.equals(Language.ES)) {
-//      Collections.shuffle(this.esSpots);
-//    }
-  }
 
 
   @Override
@@ -225,15 +226,8 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
       @Override
       public void onClick(View v) {
         Toast.makeText(MainActivity.this, "Getting new deck", Toast.LENGTH_SHORT).show();
-        viewModel.getRandomWordPairs(Language.ES, 50).observe(MainActivity.this, new Observer<List<WordPair>>() {
-          @Override
-          public void onChanged(List<WordPair> wordPairs) {
-            if (wordPairs.size() > 0){
-              adapter.setSpots(wordPairs);
-              directions.clear();
-            }
-          }
-        });
+        viewModel.swapDeck(Language.ES, 50);
+        directions.clear();
       }
     });
 
@@ -282,16 +276,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 //    result.dispatchUpdatesTo(adapter);
 //  }
 
-  void reload() {
-//    List<Spot> old = adapter.getSpots();
-//    List<Spot> newItems = createSpots();
-//    SpotDiffCallback callback = new SpotDiffCallback(old, newItems);
-//    DiffUtil.DiffResult result = DiffUtil.calculateDiff(callback);
 
-    shuffle(currentLang);
-    adapter.notifyDataSetChanged();
-    //result.dispatchUpdatesTo(adapter);
-  }
 //
 //  void addFirst(int size){
 //    List<Spot> old = adapter.getSpots();

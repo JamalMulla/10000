@@ -10,6 +10,11 @@ import com.jmulla.some10000words.Entities.WordPair;
 import com.jmulla.some10000words.Language;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class WordPairRepository {
   private WordPairDao wordPairDao;
@@ -56,13 +61,42 @@ public class WordPairRepository {
     t.start();
   }
 
-  public LiveData<List<WordPair>> getRandomWordPairs(Language language, int numberOfPairs){
-    LiveData<List<WordPair>> randomWordPairs = wordPairDao.getRandomWordPairs(language, numberOfPairs);
-    return randomWordPairs;
+  public List<WordPair> getRandomWordPairs(final Language language, final int numberOfPairs){
+    ExecutorService executor = Executors.newFixedThreadPool(1);
+    Callable<List<WordPair>> callable = new Callable<List<WordPair>>() {
+      @Override
+      public List<WordPair> call() {
+        return wordPairDao.getRandomWordPairs(language, numberOfPairs);
+      }
+    };
+    Future<List<WordPair>> future = executor.submit(callable);
+    try {
+      return future.get();
+    } catch (ExecutionException | InterruptedException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
-  public LiveData<List<WordPair>> getAllPairs(Language language) {
-    return wordPairDao.getAllPairs(language);
+  public List<WordPair> getAllPairs(final Language language) {
+    ExecutorService executor = Executors.newFixedThreadPool(1);
+    Callable<List<WordPair>> callable = new Callable<List<WordPair>>() {
+      @Override
+      public List<WordPair> call() {
+        return wordPairDao.getAllPairs(language);
+      }
+    };
+    Future<List<WordPair>> future = executor.submit(callable);
+    try {
+      return future.get();
+    } catch (ExecutionException | InterruptedException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public LiveData<List<WordPair>> getAllStarred(){
+    return wordPairDao.getAllStarred();
   }
 
 }

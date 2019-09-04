@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jmulla.some10000words.Entities.Pronunciation;
 import com.jmulla.some10000words.Entities.WordPair;
+import com.jmulla.some10000words.ViewModels.WordPairViewModel;
 import com.varunest.sparkbutton.SparkButton;
 import com.varunest.sparkbutton.SparkEventListener;
 
@@ -38,12 +39,18 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
   private List<Integer> colors;
 
+  private WordPairViewModel viewModel;
+
 
   public CardStackAdapter(List<WordPair> spots) {
     this.spots = spots;
   }
 
   public CardStackAdapter(){}
+
+  public CardStackAdapter(WordPairViewModel viewModel) {
+    this.viewModel = viewModel;
+  }
 
   private void setupColors() {
     colors = new ArrayList<>();
@@ -84,6 +91,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     final WordPair spot = this.spots.get(position);
     holder.foreign_word.setText(spot.getForeignWord());
     holder.en_word1.setText(spot.getDef1());
+    holder.star.setChecked(spot.isStarred());
     if (spot.getDef2().equals("")) {
       holder.divider_back.setVisibility(View.GONE);
     } else {
@@ -221,6 +229,9 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         @Override
         public void onEvent(ImageView button, boolean buttonState) {
           star.playAnimation();
+          WordPair wordPair = spots.get(getAdapterPosition());
+          wordPair.setStarred(buttonState);
+          viewModel.update(wordPair);
         }
 
         @Override

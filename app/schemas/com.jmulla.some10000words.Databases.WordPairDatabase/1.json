@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "65374fc26a12bfa1d2d5b210d0fb8a07",
+    "identityHash": "86f6a3626d6cf17e604155afdd53fbe0",
     "entities": [
       {
         "tableName": "WordPairs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `foreignWord` TEXT, `def1` TEXT, `def2` TEXT, `language` TEXT, `pronunciation` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `foreignWord` TEXT, `def1` TEXT, `def2` TEXT, `language` TEXT, `pronunciation` TEXT, `isStarred` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -43,6 +43,12 @@
             "columnName": "pronunciation",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "isStarred",
+            "columnName": "isStarred",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -90,7 +96,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '65374fc26a12bfa1d2d5b210d0fb8a07')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '86f6a3626d6cf17e604155afdd53fbe0')"
     ]
   }
 }
