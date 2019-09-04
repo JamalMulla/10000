@@ -10,11 +10,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.jmulla.some10000words.Entities.WordPair;
 import com.jmulla.some10000words.Language;
 import com.jmulla.some10000words.Repositories.WordPairRepository;
+import com.yuyakaido.android.cardstackview.Direction;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class WordPairViewModel extends AndroidViewModel {
@@ -23,6 +25,8 @@ public class WordPairViewModel extends AndroidViewModel {
   private List<WordPair> esWords;
   private List<WordPair> deWords;
   private MutableLiveData<List<WordPair>> currentWords;
+  private Stack<Direction> directions = new Stack<>();
+  private int currentPosition = 0;
 
   public WordPairViewModel(@NonNull Application application) {
     super(application);
@@ -110,6 +114,33 @@ public class WordPairViewModel extends AndroidViewModel {
   }
 
 
+  public int getCurrentPosition() {
+    return currentPosition;
+  }
+
+  public void setCurrentPosition(int currentPosition) {
+    this.currentPosition = currentPosition;
+  }
+
+  public Direction popDirection() {
+    return directions.pop();
+  }
+
+  public Direction peekDirection(){
+    return directions.peek();
+  }
+
+  public void pushDirection(Direction direction) {
+    this.directions.push(direction);
+  }
+
+  public boolean directionsIsEmpty(){
+    return directions.isEmpty();
+  }
+
+  public void clearDirections(){
+    directions.clear();
+  }
 
 
 }

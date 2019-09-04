@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   private CardStackAdapter adapter;
   private Language currentLang = Language.ES;
   private WordPairViewModel viewModel;
-  private Stack<Direction> directions = new Stack<>();
 
 
   @Override
@@ -79,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
           nDialog.dismiss();
           long end = System.currentTimeMillis();
           Log.i("MainActivity", "Time taken (ms) = " + (end - start));
+          manager.scrollToPosition(viewModel.getCurrentPosition());
         }
       }
     });
@@ -117,7 +117,8 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
   @Override
   public void onCardSwiped(Direction direction) {
     Log.d("CardStackView", "onCardSwiped: p = " + manager.getTopPosition() + ", d = " + direction);
-    directions.push(direction);
+    viewModel.pushDirection(direction);
+    viewModel.setCurrentPosition(manager.getTopPosition());
 //    if (manager.getTopPosition() == adapter.getItemCount() - 5){
 //      paginate();
 //    }
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
   @Override
   public void onCardRewound() {
-    directions.pop();
+    viewModel.popDirection();
   }
 
   @Override
@@ -207,12 +208,12 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     rewind.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if ( directions.empty()) {
+        if (viewModel.directionsIsEmpty()) {
           return;
         }
 
         RewindAnimationSetting setting = new RewindAnimationSetting.Builder()
-            .setDirection(directions.peek())
+            .setDirection(viewModel.peekDirection())
             .setDuration(Duration.Normal.duration)
             .setInterpolator(new DecelerateInterpolator())
             .build();
@@ -226,8 +227,9 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
       @Override
       public void onClick(View v) {
         Toast.makeText(MainActivity.this, "Getting new deck", Toast.LENGTH_SHORT).show();
+        viewModel.setCurrentPosition(0);
         viewModel.swapDeck(Language.ES, 50);
-        directions.clear();
+        viewModel.clearDirections();
       }
     });
 
